@@ -9,6 +9,7 @@ const SignInScreen = ({navigation}) => {
             <Button title="Sign in with Google" onPress={() => {
                 console.log("Sign in with gogle")
             }}/>
+            
         </View>
     )
 }
