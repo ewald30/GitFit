@@ -2,6 +2,10 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, signInWithRedirect, GoogleAuthProvider, createUserWithEmailAndPassword } from "firebase/auth";
 import { getAnalytics } from "firebase/analytics";
+import { getFirestore } from "firebase/firestore";
+import { collection, addDoc } from "firebase/firestore"; 
+
+
 
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -21,28 +25,45 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 const auth = getAuth(app)
 // ​​const db = getFirestore(app);
 
 
-const registerWithEmailAndPassword = async (name, email, password) => {
+const registerWithEmailAndPassword = async (username, email, password) => {
     try {
       const res = await createUserWithEmailAndPassword(auth, email, password);
       const user = res.user;
 
-      console.log("user: " + JSON.stringify(user, null, 2));
-      console.log("email: " + user.email)
-    //   await addDoc(collection(db, "users"), {
-    //     uid: user.uid,
-    //     name,
-    //     authProvider: "local",
-    //     email,
-    //   });
+      // console.log("user: " + JSON.stringify(user, null, 2));
+      // console.log("email: " + user.email)
+
+      await addDoc(collection(db, "users"), {
+        uid: user.uid,
+        username,
+        authProvider: "local",
+        email,
+      });
+
+      return user;
     } catch (err) {
-      console.error(err);
       alert(err.message);
     }
   };
+
+const  logWorkout = async (uid, username, date) => { 
+  try{
+
+    await addDoc(collection(db, "workouts"), {
+      uid: uid,
+      username,
+      date
+    });
+
+  } catch (err) {
+    alert(err.message);
+  }
+}
 
   const googleProvider = new GoogleAuthProvider();
   const signInWithGoogle = async () => {
@@ -58,4 +79,4 @@ const registerWithEmailAndPassword = async (name, email, password) => {
   };
 
 
-export {auth, registerWithEmailAndPassword, signInWithGoogle}
+export {auth, registerWithEmailAndPassword, signInWithGoogle, logWorkout}
