@@ -1,8 +1,8 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAuth, signInWithRedirect, GoogleAuthProvider, createUserWithEmailAndPassword } from "firebase/auth";
+import { getAuth, signInWithRedirect, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { getAnalytics } from "firebase/analytics";
-import { getFirestore } from "firebase/firestore";
+import { doc, getDoc, getDocs, getFirestore, query, setDoc, where } from "firebase/firestore";
 import { collection, addDoc } from "firebase/firestore"; 
 
 
@@ -31,25 +31,48 @@ const auth = getAuth(app)
 
 
 const registerWithEmailAndPassword = async (username, email, password) => {
-    try {
       const res = await createUserWithEmailAndPassword(auth, email, password);
       const user = res.user;
-
       // console.log("user: " + JSON.stringify(user, null, 2));
       // console.log("email: " + user.email)
 
-      await addDoc(collection(db, "users"), {
+      const usersRef = collection(db, "users");
+
+      await setDoc(doc(usersRef, user.uid), {
         uid: user.uid,
         username,
         authProvider: "local",
         email,
       });
 
-      return user;
-    } catch (err) {
-      alert(err.message);
-    }
+      return user.uid;
   };
+
+
+const handleSignIn = async (email, password) => {
+  console.log("EMAIL: " + email)
+  console.log("PASSWORD: " + password)
+  try {
+    const res = await signInWithEmailAndPassword(auth, email, password);
+    const user = res.user;
+    console.log("LOgged in with" , user)
+
+  } catch (err) {
+    alert(err.message)
+  }
+}
+
+const handleSignOut = async () => {
+  try {
+    const res = await signOut(auth);
+    // const user = res.user;
+    // console.log("LOgged in with" , user)
+
+  } catch (err) {
+    alert(err.message);
+  }
+}
+
 
 const  logWorkout = async (uid, username, date) => { 
   try{
@@ -65,6 +88,36 @@ const  logWorkout = async (uid, username, date) => {
   }
 }
 
+
+const getUserData = async (uid) => {
+    const docRef = doc(db, "users", uid);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      return docSnap.data();
+    } else {
+      // doc.data() will be undefined in this case
+      alert("No such document!");
+  }
+}
+
+const getWorkoutsForUser = async (uid) => {
+  const q = query(collection(db, "workouts"), where("uid", "==", uid));
+  
+  const querySnapshot = await getDocs(q);
+  // console.log(querySnapshot.data())
+
+  // querySnapshot.map(doc => doc.data());
+  let data = [];
+  querySnapshot.forEach((doc) => {
+    data.push(doc.data())
+  })
+
+  return data;
+}
+
+
+
   const googleProvider = new GoogleAuthProvider();
   const signInWithGoogle = async () => {
     try {
@@ -79,4 +132,4 @@ const  logWorkout = async (uid, username, date) => {
   };
 
 
-export {auth, registerWithEmailAndPassword, signInWithGoogle, logWorkout}
+export {auth, registerWithEmailAndPassword, handleSignIn, handleSignOut, getUserData, signInWithGoogle, logWorkout, getWorkoutsForUser}

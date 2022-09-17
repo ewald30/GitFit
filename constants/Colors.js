@@ -1,12 +1,12 @@
 const tintColorLight = '#2f95dc';
 const tintColorDark = '#fff';
-const primary = '#444';
+const primary = '#555';
 const accent = '#f44675';
 const accentDark = '#FA366B';
 
 export default {
   light: {
-    text: '#000',
+    text: '#555',
     buttonCtaBackground: accent,
     buttonCtaForeground: "#fff",
     buttonBackground: "#fff",
@@ -15,12 +15,14 @@ export default {
     tint: tintColorLight,
     tabIconDefault: '#ccc',
     tabIconSelected: tintColorLight,
-    container: primary,
+    container: "#fff",
     inputBackground: "#fff",
     inputForeground: "#6C757D",
     inputPlaceholder:"#666",
     link: "#008aff",
-    logo: accent
+    logo: accent,
+    datePicker: "rgba(255,255,255, 0)",
+    calendarBackground: "#f6f8fa"
     
   },
 
@@ -34,12 +36,14 @@ export default {
     tint: tintColorDark,
     tabIconDefault: '#ccc',
     tabIconSelected: tintColorDark,
-    container: primary,
+    container: "#222",
     inputBackground: "#212121",
     inputForeground: "#fff",
     inputPlaceholder:"#bbb",
     link: "#008aff",
-    logo: accentDark
+    logo: accentDark,
+    datePicker: "#212121",
+    calendarBackground: "#212121"
 
   },
 };

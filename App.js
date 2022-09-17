@@ -11,13 +11,49 @@ import SignInScreen from './screens/SignInScreen';
 import SignUpScreen from './screens/SignUpScreen';
 import {DrawerActions} from '@react-navigation/native';
 import LogWorkoutScreen from './screens/LogWorkoutScreen';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import persistReducer from 'redux-persist/es/persistReducer';
+import reducers from './redux/reducers';
+import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
+import persistStore from 'redux-persist/es/persistStore';
+import { Provider, useSelector } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
+import UserProfileScreen from './screens/UserProfileScreen';
+import SettingsScreen from './screens/SettingsScreen';
+import { useEffect } from 'react';
+import { auth } from './firebase';
+import { FLUSH,REHYDRATE,PAUSE,PERSIST,PURGE,REGISTER, } from 'redux-persist';
+import StatsScreen from './screens/StatsScreen';
+
+/** Redux setup */
+const persistConfig = {
+	key: 'root',
+	storage: AsyncStorage,
+}
+
+const persistedReducer = persistReducer(persistConfig, reducers);
+const store = configureStore({
+	reducer: persistedReducer,
+	middleware: (getDefaultMiddleware) =>
+	  getDefaultMiddleware({
+		serializableCheck: {
+		  ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+		},
+	  }),
+  })
+const persistor = persistStore(store)
 
 
+
+/** Navigation Setup */
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
 
+
+
 export function AppContentNavigator(){
 	const colorScheme = useColorScheme();
+	const {loggedIn, uid} = useSelector(state => state.auth)
 
 	return (
 			<Drawer.Navigator 
@@ -32,23 +68,33 @@ export function AppContentNavigator(){
 					headerLeft: false,
 					headerRight: () => <DrawerToggleButton tintColor={colorScheme === 'dark' ? "#fff" : "#555"}/>,
 				}}>
-				<Drawer.Screen name="SignUpScreen" component={SignUpScreen} options={{title: "Sign Up"}}/>
-				<Drawer.Screen name="SignInScreen" component={SignInScreen} options={{title: "Sign In"}}/>
-				<Drawer.Screen name="LogWorkoutScreen" component={LogWorkoutScreen} options={{title: "Log Workout"}}/>
+				{!loggedIn && <Drawer.Screen name="SignUpScreen" component={SignUpScreen} options={{title: "Sign Up"}}/>}
+				{!loggedIn && <Drawer.Screen name="SignInScreen" component={SignInScreen} options={{title: "Sign In"}}/>}
+				{loggedIn && <Drawer.Screen name="LogWorkoutScreen" component={LogWorkoutScreen} options={{title: "Log Workout", headerShown: true}}/>}
+				{loggedIn && <Drawer.Screen name="UserProfileScreen" component={UserProfileScreen} options={{title: "Profile"}}/>}
+				{loggedIn && <Drawer.Screen name="StatsScreen" component={StatsScreen} options={{title: "Statistics"}}/>}
+				{loggedIn && <Drawer.Screen name="SettingsScreen" component={SettingsScreen} options={{title: "Settings"}}/>}
+
+
 			</Drawer.Navigator>
 	);
 }
 
 export default function App() {
 	const colorScheme = useColorScheme();
+
 	return (
-		<NavigationContainer theme={colorScheme === 'dark' ? NavigatorDarkTheme : NavigatorLightTheme}>
-			<Stack.Navigator>
-				<Stack.Screen name="Home" component={HomeScreen} options={{title: "Home", headerShown: false}}/>
-				<Stack.Screen name="Content" component={AppContentNavigator} options={{headerShown: false }} />
-				{/* <Stack.Screen name="CakeDetails" component={CakeDetailsScreen} options={{title: "Cake details", headerMode: 'screen' }} /> */}
-			</Stack.Navigator>
-		</NavigationContainer>
+		<Provider store={store}>
+			<PersistGate persistor={persistor}>
+					<NavigationContainer theme={colorScheme === 'dark' ? NavigatorDarkTheme : NavigatorLightTheme}>
+						<Stack.Navigator>
+							<Stack.Screen name="Home" component={HomeScreen} options={{title: "Home", headerShown: false}}/>
+							<Stack.Screen name="Content" component={AppContentNavigator} options={{headerShown: false }} />
+							{/* <Stack.Screen name="CakeDetails" component={CakeDetailsScreen} options={{title: "Cake details", headerMode: 'screen' }} /> */}
+						</Stack.Navigator>
+					</NavigationContainer>
+			</PersistGate>
+		</Provider>
 
 	)
 }

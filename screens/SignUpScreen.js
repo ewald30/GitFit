@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { StyleSheet } from "react-native"
 import LogoText from "../assets/logo/LogoText"
 import ButtonCTA from "../themedComponents/ButtonCTA"
@@ -8,7 +8,10 @@ import View from "../themedComponents/View"
 import Button from "../themedComponents/Button"
 import GoogleIcon from "../assets/icons/GoogleIcon"
 import Link from "../themedComponents/Link"
-import { registerWithEmailAndPassword } from "../firebase"
+import { auth, registerWithEmailAndPassword } from "../firebase"
+import { useDispatch } from "react-redux"
+import { logOut, setLoggedIn, setUserId } from "../redux/actions/auth"
+import AsyncStorage from "@react-native-async-storage/async-storage"
 
 const State = {
     username: null,
@@ -19,11 +22,24 @@ const State = {
 
 const SignUpScreen = ({navigation}) => {
     const [state, setState] = useState(State);
+    const dispatch = useDispatch();
 
-    const handleSignUp = () => {
-        console.log("State",state)
-        console.log("asdasdasdasd")
-        const user = registerWithEmailAndPassword(state.username, state.email, state.password);
+    useEffect(() => {
+        const unsubscribe = auth.onAuthStateChanged(user => {
+            if(user){
+                dispatch(setLoggedIn(true));
+                navigation.navigate("LogWorkoutScreen");
+            }
+        })
+        return unsubscribe;
+    }, [])
+
+    const handleSignUp = async () => {
+        try{
+            await registerWithEmailAndPassword(state.username, state.email, state.password);
+        } catch(error){
+            alert(error.message);
+        }
 
     }
     
@@ -39,11 +55,11 @@ const SignUpScreen = ({navigation}) => {
 
                 <ButtonCTA style={styles.container.form.item} title="Sign Up" onPress={() => handleSignUp()}/>
 
-                <Button style={styles.container.form.item} title="Sign Up with Google" onPress={() => console.log("sign up google")} icon={<GoogleIcon/>}/>
+                <Button style={styles.container.form.item} title="Sign Up with Google" icon={<GoogleIcon/>}/>
             </View>
             <View style={styles.bottomText}>
                 <Text style={styles.bottomText.text}>Already a member?</Text>
-                <Link style={styles.bottomText.link} title="Log in now" handleOnPress={() => console.log("register noew")}/>
+                <Link style={styles.bottomText.link} title="Log in now" onPress={() => navigation.navigate("SignInScreen")}/>
             </View>
         </View>
     )

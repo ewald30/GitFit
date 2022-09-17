@@ -1,7 +1,7 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import {Image, StyleSheet } from "react-native"
 import LogoComponent from "../assets/logo/LogoComponent"
-import { registerWithEmailAndPassword, signInWithGoogle } from "../firebase"
+import { auth, handleSignIn, registerWithEmailAndPassword, signInWithGoogle } from "../firebase"
 import ButtonCTA from "../themedComponents/ButtonCTA"
 import Button from "../themedComponents/Button"
 import Input from "../themedComponents/Input"
@@ -9,14 +9,31 @@ import Text from "../themedComponents/Text"
 import View from "../themedComponents/View"
 import Link from "../themedComponents/Link"
 import GoogleIcon from "../assets/icons/GoogleIcon"
+import { useDispatch } from "react-redux"
+import { setLoggedIn } from "../redux/actions/auth"
 
 const name = "Berla Ewald"
 const email = "berla.ewald30@gmail.com"
 const password = "1234567"
 
 const SignInScreen = ({navigation}) => {
+    const dispatch = useDispatch()
     const [email, setEmail] = useState(null);
     const [password, setPassword] = useState(null)
+
+
+
+    useEffect(() => {
+        const unsubscribe = auth.onAuthStateChanged(user => {
+            if(user){
+                dispatch(setLoggedIn(true));
+                navigation.navigate("LogWorkoutScreen");
+            }
+        })
+        return unsubscribe;
+    }, [])
+
+
 
     async function signInWithGoogleAsync() {
         console.log("GOOGLE")
@@ -38,24 +55,21 @@ const SignInScreen = ({navigation}) => {
         }
     }
 
-    const handleSignUp = () => {
-        const user = registerWithEmailAndPassword(name, email, password)
-        console.log("USER DATA: ", user)
-    }
-    
 
+    
     return (
         <View style={styles.signUpScreen}>
             <LogoComponent/>
             <View style={styles.formContainer}>
-                <Input style={styles.formContainerItem} placeholder="Email" value={email}/>
-                <Input style={styles.formContainerItem} placeholder="Password" value={password}/>
-                <ButtonCTA style={styles.formContainerItem} title="Sign Up" handleOnPress={handleSignUp}/>
+                <Input style={styles.formContainerItem} placeholder="Email" value={email} onChangeText={text => setEmail(text)} />
+                <Input style={styles.formContainerItem} placeholder="Password" value={password} onChangeText={text => setPassword(text)}/>
+                <ButtonCTA style={styles.formContainerItem} title="Sign In" onPress={() => handleSignIn(email, password)}/>
+
                 <Button style={styles.formContainerItem} title="Sign In with Google" onPress={signInWithGoogleAsync} icon={<GoogleIcon/>}/>
             </View>
             <View style={styles.bottomText}>
                 <Text style={styles.bottomText.text}>Not a member?</Text>
-                <Link style={styles.bottomText.link} title="Register now" handleOnPress={() => console.log("register noew")}/>
+                <Link style={styles.bottomText.link} title="Register now" onPress={() => navigation.navigate("SignUpScreen")}/>
             </View>
         </View>
     )
