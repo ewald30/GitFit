@@ -155,7 +155,7 @@ const StatsScreen = ({navigation}) => {
                     // style={styles.calendar}
                     // markingType={'period'}
                     enableSwipeMonths={true}
-                    // hideExtraDays={true}
+                    hideExtraDays={true}
                     firstDay={1}
                     displayLoadingIndicator={loading}
                     // hideArrows={true}

@@ -24,6 +24,9 @@ import { useEffect } from 'react';
 import { auth } from './firebase';
 import { FLUSH,REHYDRATE,PAUSE,PERSIST,PURGE,REGISTER, } from 'redux-persist';
 import StatsScreen from './screens/StatsScreen';
+import WorkoutPLanScreen from './screens/WorkoutPlanScreen';
+import ExercisesScreen from './screens/ExercisesScreen';
+import ExerciseDetailsScreen from './screens/ExerciseDetailsScreen';
 
 /** Redux setup */
 const persistConfig = {
@@ -71,7 +74,9 @@ export function AppContentNavigator(){
 				{!loggedIn && <Drawer.Screen name="SignUpScreen" component={SignUpScreen} options={{title: "Sign Up"}}/>}
 				{!loggedIn && <Drawer.Screen name="SignInScreen" component={SignInScreen} options={{title: "Sign In"}}/>}
 				{loggedIn && <Drawer.Screen name="LogWorkoutScreen" component={LogWorkoutScreen} options={{title: "Log Workout", headerShown: true}}/>}
-				{loggedIn && <Drawer.Screen name="UserProfileScreen" component={UserProfileScreen} options={{title: "Profile"}}/>}
+				{/* {loggedIn && <Drawer.Screen name="UserProfileScreen" component={UserProfileScreen} options={{title: "Profile"}}/>} */}
+				{loggedIn && <Drawer.Screen name="ExercisesScreen" component={ExercisesScreen} options={{title: "Exercises", headerShown: true}}/>} 
+				{loggedIn && <Drawer.Screen name="WorkoutPlanScreen" component={WorkoutPLanScreen} options={{title: "Workout Plan", headerShown: true}}/>} 
 				{loggedIn && <Drawer.Screen name="StatsScreen" component={StatsScreen} options={{title: "Statistics"}}/>}
 				{loggedIn && <Drawer.Screen name="SettingsScreen" component={SettingsScreen} options={{title: "Settings"}}/>}
 
@@ -90,7 +95,7 @@ export default function App() {
 						<Stack.Navigator>
 							<Stack.Screen name="Home" component={HomeScreen} options={{title: "Home", headerShown: false}}/>
 							<Stack.Screen name="Content" component={AppContentNavigator} options={{headerShown: false }} />
-							{/* <Stack.Screen name="CakeDetails" component={CakeDetailsScreen} options={{title: "Cake details", headerMode: 'screen' }} /> */}
+							<Stack.Screen name="ExerciseDetailsScreen" component={ExerciseDetailsScreen} options={{title: "Exercise Details"}} />
 						</Stack.Navigator>
 					</NavigationContainer>
 			</PersistGate>

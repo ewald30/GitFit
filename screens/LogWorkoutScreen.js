@@ -112,6 +112,13 @@ const LogWorkoutScreen = ({navigation}, props) => {
           d1.getDate() === d2.getDate();
       }
 
+    if (loading) {
+        return (
+            <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color="#f44675" />
+            </View>
+        )
+    }
 
     return (
         <View style={styles.container}>
@@ -126,8 +133,7 @@ const LogWorkoutScreen = ({navigation}, props) => {
                     {!loading && <Text style={styles.container.button.text}>
                         +
                     </Text>}
-                    {loading && <ActivityIndicator size="large" color="#fff" />
-}
+                    {/* {loading && <ActivityIndicator size="large" color="#fff" />} */}
                 </ButtonAccent>
             </View>}
 
@@ -213,6 +219,13 @@ const styles = StyleSheet.create({
         illustration: {
             marginBottom: 50,
         }
+    },
+
+    loadingContainer: {
+        height: "100%",
+        width: "100%",
+        alignItems: "center",
+        justifyContent: "center",
     },
 
 
