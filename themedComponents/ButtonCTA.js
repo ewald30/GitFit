@@ -1,5 +1,6 @@
-import { Text, TouchableOpacity as DefaultButton, useColorScheme } from "react-native";
+import { Text, TouchableOpacity as DefaultButton } from "react-native";
 import {StyleSheet } from "react-native"
+import useColorScheme from "../hooks/useColorScheme";
 import useThemeColor from "../hooks/useThemeColor";
 
 export default function ButtonCTA(props){
@@ -9,9 +10,9 @@ export default function ButtonCTA(props){
     const color  = useThemeColor({ light: lightColor, dark: darkColor}, 'buttonCtaForeground');
 
     return <DefaultButton style={[{backgroundColor},{shadowColor: colorScheme === 'dark' ? "#111" : "rgba(226, 84, 110, 0.8)"}, styles.button, style]} {...otherProps}>
-        <Text style={[{color}, styles.buttonTitle]}>
+        {title && <Text style={[{color}, styles.buttonTitle]}>
             {title}
-        </Text>
+        </Text>}
     </DefaultButton>;
 }
 
@@ -21,7 +22,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         width: '70%',
         height: '6.5%',
-        borderRadius: '15px',
+        borderRadius: 15,
         shadowOffset: {
             width: 0,
             height: 6,

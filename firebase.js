@@ -2,7 +2,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, signInWithRedirect, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { getAnalytics } from "firebase/analytics";
-import { doc, getDoc, getDocs, getFirestore, query, setDoc, where } from "firebase/firestore";
+import { deleteDoc, doc, getDoc, getDocs, getFirestore, query, setDoc, where } from "firebase/firestore";
 import { collection, addDoc } from "firebase/firestore"; 
 
 
@@ -88,6 +88,83 @@ const  logWorkout = async (uid, username, date) => {
   }
 }
 
+const saveExercise = async (uid, name, notes) => {
+  try{
+
+    // Add a new document with a generated id
+  const newExerciseRef = doc(collection(db, "exercises"));
+
+  await setDoc(newExerciseRef, {
+    eid: newExerciseRef.id,
+    uid: uid,
+    name: name,
+    notes: notes
+  });
+
+  } catch (err) {
+    alert(err.message);
+  }
+}
+
+const deleteExercise = async(eid) => {
+  try{
+    await deleteDoc(doc(db, "exercises", eid));
+  } catch (err) {
+    alert(err.message);
+  }
+}
+
+const getExercises = async (uid) => {
+  const q = query(collection(db, "exercises"), where("uid", "==", uid));
+  try{
+    const querySnapshot = await getDocs(q);
+    let data = [];
+    querySnapshot.forEach((doc) => {
+      data.push(doc.data())
+    })
+  
+    return data;
+  } catch (err) {
+    alert(err.message);
+  }
+
+}
+
+const saveExerciseProgressLog = async (eid, uid, date, weight, reps) => {
+  try{
+    const newLogRef = doc(collection(db, "progress_logs"));
+
+    const resp = await setDoc(newLogRef, {
+      pid: newLogRef.id,
+      eid,
+      uid,
+      date,
+      reps,
+      weight,
+    })
+    return newLogRef.id;
+  
+  } catch(err) {
+    console.log(err);
+  }
+}
+
+const getExerciseProgressLogs= async (eid) => {
+  try{
+    const q = query(collection(db, "progress_logs"), where("eid", "==", eid));
+    const querySnapshot = await getDocs(q);
+
+    let data = [];
+    querySnapshot.forEach((doc) => {
+      data.push(doc.data())
+    })
+  
+    return data;
+
+  } catch(err) {
+    alert(err.message);
+  }
+}
 
 const getUserData = async (uid) => {
     const docRef = doc(db, "users", uid);
@@ -132,4 +209,4 @@ const getWorkoutsForUser = async (uid) => {
   };
 
 
-export {auth, registerWithEmailAndPassword, handleSignIn, handleSignOut, getUserData, signInWithGoogle, logWorkout, getWorkoutsForUser}
+export {auth, registerWithEmailAndPassword, handleSignIn, handleSignOut, getUserData, signInWithGoogle, logWorkout, saveExercise, getWorkoutsForUser, getExercises, deleteExercise, saveExerciseProgressLog, getExerciseProgressLogs}

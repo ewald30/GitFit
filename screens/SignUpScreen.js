@@ -48,14 +48,22 @@ const SignUpScreen = ({navigation}) => {
         <View style={styles.container}>
             <LogoText style={styles.logo}/>
             <View style = {styles.container.form}>
-                <Input style={styles.container.form.item} placeholder="Username" value={state.username} onChangeText={username => setState({...state, username})}/>
-                <Input style={styles.container.form.item} placeholder="Email" value={state.email} onChangeText={email => setState({...state, email})}/>
-                <Input style={styles.container.form.item} placeholder="Password" value={state.password} onChangeText={password => setState({...state, password})}/>
-                <Input style={styles.container.form.item} placeholder="Confirm Password" value={state.confirmPassword} onChangeText={confirmPassword => setState({...state, confirmPassword})}/>
+                <Input style={styles.container.form.item} placeholder="Username" value={state.username} ionChangeText={username => setState({...state, username})}/>
+                <Input style={styles.container.form.item} placeholder="Email" value={state.email} keyboardType={"email-address"}  onChangeText={email => setState({...state, email})}/>
+                <Input style={styles.container.form.item} placeholder="Password" secureTextEntry value={state.password} onChangeText={password => setState({...state, password})}/>
+                <Input style={styles.container.form.item}
+                    placeholder="Confirm Password"
+                    name="password"
+                    secureTextEntry 
+                    value={state.confirmPassword}
+                    autoCorrect={false}
+                    textContentType="newPassword"
+                    onChangeText={confirmPassword => setState({...state, confirmPassword})}/>
 
                 <ButtonCTA style={styles.container.form.item} title="Sign Up" onPress={() => handleSignUp()}/>
 
-                <Button style={styles.container.form.item} title="Sign Up with Google" icon={<GoogleIcon/>}/>
+                {/* <Button style={styles.container.form.item} title="Sign Up with Google" icon={<GoogleIcon/>}/> */}
+
             </View>
             <View style={styles.bottomText}>
                 <Text style={styles.bottomText.text}>Already a member?</Text>
@@ -75,13 +83,13 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
 
         form: {
-            height: '70%',
+            height: 400,
             width: '100%',
             alignItems: 'center',
             justifyContent: "space-around",
 
             item: {
-                height: '10%',
+                height: 45
             }
         }
         

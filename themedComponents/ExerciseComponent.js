@@ -1,4 +1,4 @@
-import { StyleSheet, TouchableOpacity, useColorScheme } from "react-native"
+import { StyleSheet, TouchableOpacity } from "react-native"
 import Text from "./Text"
 import View from "./View"
 import { View as DefaultView } from "react-native"
@@ -6,13 +6,14 @@ import useThemeColor from "../hooks/useThemeColor"
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { Animated } from 'react-native';
 import { RectButton } from 'react-native-gesture-handler';
+import { deleteExercise } from "../firebase"
+import useColorScheme from "../hooks/useColorScheme"
 
 
 const ExerciseComponent = (props) => {
-    const { style, lightColor, darkColor, title, nbOfSets, navigation } = props;
+    const { style, lightColor, darkColor, eid, title, notes, handleDelete, navigation } = props;
     const backgroundColor = useThemeColor({ light: lightColor, dark: darkColor }, 'background');
     const colorScheme = useColorScheme();
-
 
     const renderRightActions = (progress, dragX) => {
         const trans = dragX.interpolate({
@@ -20,7 +21,7 @@ const ExerciseComponent = (props) => {
           outputRange: [0, 8, 0, 0],
         });
         return (
-          <RectButton style={styles.deleteAction} onPress={() => {console.log("close")}}>
+          <RectButton style={styles.deleteAction} onPress={() => {handleDelete(eid)}}>
             <Animated.Text
               style={[
                 styles.deleteAction.text,
@@ -32,15 +33,23 @@ const ExerciseComponent = (props) => {
             </Animated.Text>
           </RectButton>
         );
-      };
+    };
+
+    function getFirstLine(text) {
+    	var index = text.indexOf("\n");
+        if (index === -1) index = undefined;
+        return text.substring(0, index);
+    }
 
 
     return (
         <Swipeable renderRightActions={renderRightActions}>
-            <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate("ExerciseDetailsScreen")}>
+            <TouchableOpacity 
+                activeOpacity={1} 
+                onPress={() => navigation.navigate('ExerciseDetailsScreen', {eid, title, notes})}>
                 <DefaultView style={[{ backgroundColor }, styles.container, style]}>
                     <Text style={styles.title}>{title}</Text>
-                    <Text>{nbOfSets} sets</Text>
+                    {notes.length != 0 && <Text>{getFirstLine(notes)} ...</Text>}
                 </DefaultView>
             </TouchableOpacity>
         </Swipeable>

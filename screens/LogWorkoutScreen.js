@@ -1,6 +1,6 @@
 import { useFocusEffect, useIsFocused } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
-import { ActivityIndicator, StyleSheet } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { ActivityIndicator, Animated, StyleSheet } from "react-native";
 import CheckIllustration from "../assets/illustrations/CheckIllustration";
 import HelloIllustration from "../assets/illustrations/HelloIllustration";
 import WorkoutIllustration from "../assets/illustrations/WorkoutIllustration";
@@ -18,6 +18,10 @@ const LogWorkoutScreen = ({navigation}, props) => {
     const [loading, setLoading] = useState(true);
     const [buttonPressed, setButtonPressed] = useState(false);
 
+    const scale = useRef(new Animated.Value(1)).current;
+    const translateY = useRef(new Animated.Value(50)).current;
+
+
     let explosionRight, explosionLeft, explosionCenter;
 
     useEffect(() => {
@@ -27,6 +31,13 @@ const LogWorkoutScreen = ({navigation}, props) => {
             }
         })
     }, [])
+
+    useEffect(() => {
+        scale.setValue(0)
+        translateY.setValue(200)
+        Animated.spring(scale, {toValue: 1, useNativeDriver: true}).start();
+        Animated.spring(translateY, {toValue: 0, useNativeDriver: true}).start();
+    }, [loading])
 
 
     useFocusEffect(
@@ -52,6 +63,16 @@ const LogWorkoutScreen = ({navigation}, props) => {
                 }
     
             }
+
+            // Animation stuff
+            if (!loading) {
+                scale.setValue(0)
+                translateY.setValue(200)
+                Animated.spring(scale, {toValue: 1, useNativeDriver: true}).start();
+                Animated.spring(translateY, {toValue: 0, useNativeDriver: true}).start();
+            }
+
+
             checkIfDayAlreadyLogged() 
         }, [userId])
     );
@@ -122,19 +143,24 @@ const LogWorkoutScreen = ({navigation}, props) => {
 
     return (
         <View style={styles.container}>
+
             {!alreadyLogged && <Text style={styles.container.headerText}>You haven't logged your workout today</Text>}
             {alreadyLogged  && <Text style={styles.container.headerText}>Hurrayy! Looks like you already logged your workout today 🥳🎉</Text>}
             {alreadyLogged  && <Text style={styles.container.footerText}>See you tomorrow 🔥 💪</Text>}
 
             
             {(!alreadyLogged) && <View style={styles.footerContainer}>
-                <HelloIllustration/>
-                <ButtonAccent style={styles.container.button} onPress={handleLogWorkout}>
-                    {!loading && <Text style={styles.container.button.text}>
-                        +
-                    </Text>}
-                    {/* {loading && <ActivityIndicator size="large" color="#fff" />} */}
-                </ButtonAccent>
+                    <HelloIllustration/>
+
+                <Animated.View style={[styles.container.buttonContainer, {transform: [{scale}, {translateY}]}]}>
+                    <ButtonAccent style={styles.container.button} onPress={handleLogWorkout}>
+                        {!loading && <Text style={styles.container.button.text}>
+                            +
+                        </Text>}
+                        {/* {loading && <ActivityIndicator size="large" color="#fff" />} */}
+                    </ButtonAccent>
+                </Animated.View>
+
             </View>}
 
 
@@ -199,8 +225,12 @@ const styles = StyleSheet.create({
             marginBottom: 50
         },
 
-        button: {
+        buttonContainer: {
             width: "30%",
+
+        },
+
+        button: {
             fontSize: 30,
             height: 110,
             borderRadius: 100,

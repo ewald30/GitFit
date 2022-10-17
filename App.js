@@ -2,7 +2,7 @@
 import 'react-native-gesture-handler';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { StyleSheet, Text, TouchableOpacity, useColorScheme, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import HomeScreen from './screens/HomeScreen';
 import CakeDetailsScreen from './screens/CakeDetailsScreen';
 import CakeListScreen from './screens/CakeListScreen';
@@ -27,6 +27,8 @@ import StatsScreen from './screens/StatsScreen';
 import WorkoutPLanScreen from './screens/WorkoutPlanScreen';
 import ExercisesScreen from './screens/ExercisesScreen';
 import ExerciseDetailsScreen from './screens/ExerciseDetailsScreen';
+import CreateExerciseScreen from './screens/CreateExerciseScreen';
+import useColorScheme from './hooks/useColorScheme';
 
 /** Redux setup */
 const persistConfig = {
@@ -85,22 +87,34 @@ export function AppContentNavigator(){
 	);
 }
 
-export default function App() {
+function AppContainer() {
+	// Wrapper used in order to access color scheme
+	// the implementation of useColorScheme has access to an item from redux, therefore it needs to be wrapped by a Provider
 	const colorScheme = useColorScheme();
+
+	return (
+		<NavigationContainer theme={colorScheme === 'dark' ? NavigatorDarkTheme : NavigatorLightTheme}>
+			<Stack.Navigator>
+					<Stack.Screen name="Home" component={HomeScreen} options={{title: "Home", headerShown: false}}/>
+					<Stack.Screen name="Content" component={AppContentNavigator} options={{headerShown: false }} />
+					<Stack.Screen name="ExerciseDetailsScreen" component={ExerciseDetailsScreen} options={{title: "Exercise Details"}} />
+					<Stack.Group screenOptions={{ presentation: 'modal' }}>
+								<Stack.Screen name="CreateExerciseScreen" component={CreateExerciseScreen} options={{title: "Create Exercise"}}/>
+					</Stack.Group>
+			</Stack.Navigator>
+		</NavigationContainer>
+
+	)
+}
+
+export default function App() {
 
 	return (
 		<Provider store={store}>
 			<PersistGate persistor={persistor}>
-					<NavigationContainer theme={colorScheme === 'dark' ? NavigatorDarkTheme : NavigatorLightTheme}>
-						<Stack.Navigator>
-							<Stack.Screen name="Home" component={HomeScreen} options={{title: "Home", headerShown: false}}/>
-							<Stack.Screen name="Content" component={AppContentNavigator} options={{headerShown: false }} />
-							<Stack.Screen name="ExerciseDetailsScreen" component={ExerciseDetailsScreen} options={{title: "Exercise Details"}} />
-						</Stack.Navigator>
-					</NavigationContainer>
+				<AppContainer/>
 			</PersistGate>
 		</Provider>
-
 	)
 }
 

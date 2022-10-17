@@ -1,6 +1,7 @@
 import useThemeColor from "../hooks/useThemeColor"
-import { TextInput as DefaultInput, useColorScheme } from "react-native";
+import { TextInput as DefaultInput } from "react-native";
 import {StyleSheet } from "react-native"
+import useColorScheme from "../hooks/useColorScheme";
 
 
 export default function Input(props){
@@ -12,14 +13,13 @@ export default function Input(props){
      const placeholder = useThemeColor({ light: lightColor, dark: darkColor }, 'inputPlaceholder');
     const color2 = useThemeColor({ light: lightColor, dark: darkColor });
 
-    return <DefaultInput placeholderTextColor={placeholder} style={[{backgroundColor}, {shadowColor: colorScheme === 'dark' ? "#000" : "#777"} ,{color}, styles.input, style]} {...otherProps}/>
+    return <DefaultInput autoCapitalize="none" placeholderTextColor={placeholder} style={[{backgroundColor}, {shadowColor: colorScheme === 'dark' ? "#000" : "#777"} ,{color}, styles.input, style]} {...otherProps}/>
 
 }
 
 const styles = StyleSheet.create({
     input: {
-        width: '70%',
-        height: '6.5%',
+        width: 260,
         borderRadius: 15,
         shadowOffset: {
             width: 0,
@@ -30,6 +30,7 @@ const styles = StyleSheet.create({
         elevation: 12,
         fontWeight: '600',
         fontSize: 14,
-        paddingLeft: 15
+        paddingLeft: 15,
+        paddingRight: 15,
     }
 })

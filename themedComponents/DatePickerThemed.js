@@ -1,4 +1,4 @@
-import { StyleSheet, useColorScheme } from "react-native";
+import { StyleSheet } from "react-native";
 import useThemeColor from "../hooks/useThemeColor";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import View from "./View";

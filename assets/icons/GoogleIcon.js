@@ -1,5 +1,4 @@
 import * as React from "react"
-import { useColorScheme } from "react-native"
 import useThemeColor from "../../hooks/useThemeColor";
 import Svg, { Path } from "react-native-svg"
 

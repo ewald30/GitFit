@@ -1,5 +1,6 @@
-import { Text, TouchableOpacity as DefaultButton, useColorScheme } from "react-native";
+import { Text, TouchableOpacity as DefaultButton } from "react-native";
 import {StyleSheet } from "react-native"
+import useColorScheme from "../hooks/useColorScheme";
 import useThemeColor from "../hooks/useThemeColor";
 
 export default function ButtonAccent(props){

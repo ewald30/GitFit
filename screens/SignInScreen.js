@@ -61,11 +61,11 @@ const SignInScreen = ({navigation}) => {
         <View style={styles.signUpScreen}>
             <LogoComponent/>
             <View style={styles.formContainer}>
-                <Input style={styles.formContainerItem} placeholder="Email" value={email} onChangeText={text => setEmail(text)} />
-                <Input style={styles.formContainerItem} placeholder="Password" value={password} onChangeText={text => setPassword(text)}/>
+                <Input style={styles.formContainerItem} placeholder="Email" value={email} keyboardType={"email-address"} onChangeText={text => setEmail(text)} />
+                <Input style={styles.formContainerItem} placeholder="Password" secureTextEntry value={password} onChangeText={text => setPassword(text)}/>
                 <ButtonCTA style={styles.formContainerItem} title="Sign In" onPress={() => handleSignIn(email, password)}/>
 
-                <Button style={styles.formContainerItem} title="Sign In with Google" onPress={signInWithGoogleAsync} icon={<GoogleIcon/>}/>
+                {/* <Button style={styles.formContainerItem} title="Sign In with Google" onPress={signInWithGoogleAsync} icon={<GoogleIcon/>}/> */}
             </View>
             <View style={styles.bottomText}>
                 <Text style={styles.bottomText.text}>Not a member?</Text>
@@ -85,10 +85,10 @@ const styles = StyleSheet.create({
         width: '100%',
         alignItems: 'center',
         justifyContent: "space-around",
-        height: '40%',
+        height: 250,
     },
     formContainerItem:{
-        height: '17%',
+        height: 45
 
     },
     logo: {

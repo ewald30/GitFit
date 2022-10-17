@@ -1,9 +1,10 @@
-import { ImageBackground, StyleSheet, useColorScheme } from "react-native"
+import { ImageBackground, StyleSheet } from "react-native"
 import Text from "../themedComponents/Text"
 import View from "../themedComponents/View"
 
 import blob_light from "../assets/illustrations/blob_light.png";
 import blob_dark from "../assets/illustrations/blob_dark.png";
+import useColorScheme from "../hooks/useColorScheme";
 
 const WorkoutPLanScreen = ({navigation}) => {
     const colorScheme = useColorScheme();

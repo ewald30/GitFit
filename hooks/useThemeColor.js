@@ -1,8 +1,9 @@
-import { useColorScheme } from 'react-native';
 import Colors from '../constants/Colors';
+import useColorScheme from './useColorScheme';
 
 export default function useThemeColor(props, colorName) {
-    const theme = useColorScheme();
+    const theme = useColorScheme()
+
     const colorFromProps = props[theme];
     if (colorFromProps) {
         return colorFromProps;
@@ -10,3 +11,5 @@ export default function useThemeColor(props, colorName) {
         return Colors[theme][colorName];
     }
 }
+
+

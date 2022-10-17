@@ -1,6 +1,7 @@
 import * as React from "react"
-import { StyleSheet, useColorScheme } from "react-native"
+import { StyleSheet } from "react-native"
 import Svg, { G, Path, Defs, ClipPath } from "react-native-svg"
+import useColorScheme from "../../hooks/useColorScheme";
 import useThemeColor from "../../hooks/useThemeColor";
 /* SVGR has dropped some elements not supported by react-native-svg: filter */
 

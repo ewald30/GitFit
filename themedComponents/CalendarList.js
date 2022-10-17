@@ -1,9 +1,7 @@
-import { useColorScheme } from "react-native";
 import { CalendarList as DefaultCalendar } from "react-native-calendars"
 import useThemeColor from "../hooks/useThemeColor";
 
 export default function CalendarList(props) {
-    const colorScheme = useColorScheme();
     const { style, lightColor, darkColor, title, icon, ...otherProps } = props;
     const backgroundColor = useThemeColor({ light: lightColor, dark: darkColor }, 'calendarBackground');
     const textColor = useThemeColor({ light: lightColor, dark: darkColor }, 'text');

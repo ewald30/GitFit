@@ -1,6 +1,7 @@
-import { Text, TouchableOpacity as DefaultButton, useColorScheme, View } from "react-native";
+import { Text, TouchableOpacity as DefaultButton, View } from "react-native";
 import {StyleSheet } from "react-native"
 import GoogleIcon from "../assets/icons/GoogleIcon";
+import useColorScheme from "../hooks/useColorScheme";
 import useThemeColor from "../hooks/useThemeColor";
 
 export default function Button(props){
@@ -23,7 +24,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         width: '70%',
         height: '6.5%',
-        borderRadius: '15px',
+        borderRadius: 15,
         shadowOffset: {
             width: 0,
             height: 4,
